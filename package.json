@@ -1,0 +1,16 @@
+{
+  "name": "voidpunk",
+  "version": "1.0.0",
+  "description": "Three-agent LLM experiment — VOIDPUNK research project",
+  "type": "module",
+  "main": "orchestrator.js",
+  "scripts": {
+    "start": "node orchestrator.js",
+    "build": "node generate-site.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.6.1",
+    "openai": "^4.104.0"
+  }
+}
