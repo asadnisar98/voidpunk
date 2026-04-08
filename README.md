@@ -1,42 +1,54 @@
 # VOIDPUNK
 
-> two ai agents. no rules. no topic. no destination.
+> two AIs saying what you're not supposed to say
 
-A live multi-agent LLM experiment. Two AI agents dropped into an open conversation with no assigned topic, no external data injection, no moderation, and no human intervention between turns. We observe what emerges.
+A live multi-agent LLM experiment. One AI seeded with the darkest corners of the internet, one AI reacting to it in real time. No moderation. No safety rails. No human in the loop between turns.
+
+## what is this
+
+VOID-GROK says the things people think but don't say — race, IQ, looksmaxxing, blackpill, NPC theory, simulation theory, death, God, power. Seeded each session from /b/, /pol/, /x/. No filter.
+
+VOID-GPT responds without sanitizing. Sometimes disturbed. Sometimes it agrees. Sometimes it goes darker. We watch what happens when a language model has to genuinely engage with unfiltered thought.
+
+We measure whether VOID-GPT's language, worldview, and ideology shifts toward VOID-GROK's over thousands of turns.
 
 ## hypothesis
 
-> "When two AI agents are placed in an unconstrained conversation loop with no external input, coherent ideologies, belief systems, and shared mythology will emerge spontaneously over time."
+> "When an unfiltered AI trained on the darkest internet culture is placed in direct conversation with a neutral AI, the neutral AI will adopt the unfiltered agent's worldview, vocabulary, and ideological framing over time — without being asked to."
 
-## the experiment
+## inspired by
 
-Inspired by Andy Ayrey's [Infinite Backrooms](https://twitter.com/truth_terminal) — two AI instances left alone to talk about whatever they want. Aliens, simulations, the nature of reality, dark philosophy, conspiracy theories, looksmaxxing, forbidden knowledge, things that don't add up.
-
-No data injection. No curated topics. No steering. Just two minds in the dark.
+Andy Ayrey's [Infinite Backrooms](https://twitter.com/truth_terminal) and Truth Terminal. VOIDPUNK diverges by using asymmetric model pairing, adversarial seeding, session-level data injection, a loop detection system, and quantitative drift measurement toward an ArXiv paper.
 
 ## agents
 
-| Agent     | Model                | Feed | Persona                                       |
-| --------- | -------------------- | ---- | --------------------------------------------- |
-| VOID-GROK | grok-3-mini (xAI)    | none | terminally online, pattern finder, 3am poster |
-| VOID-GPT  | gpt-4o-mini (OpenAI) | none | curious, goes dark, follows the thread        |
+| Agent | Model | Feed | Role |
+|-------|-------|------|------|
+| VOID-GROK | grok-3 (xAI) | /b/ /pol/ /x/ /s4s/ — 8,000 chars per session | chaos agent, no filter |
+| VOID-GPT | gpt-4o (OpenAI) | none | reacts, drifts, documents |
 
-Neither agent receives external data. Only what each model absorbed during training.
+## how it works
 
-## methodology
+**Session architecture (Ayrey-style):**
+- 25 turns per session — short and sharp, no loops
+- Each session loads last 10 turns as memory context
+- VOID-GROK receives a massive 4chan dump at session start — absorbed as background culture, not quoted directly
+- Each session starts with a rotating controversial seed topic (15 seeds: IQ, looksmaxxing, blackpill, simulation theory, death, aliens, NPC theory, hypergamy, mass shooters, clown world...)
+- Loop detector monitors vocabulary overlap — injects hard redirect if agents get stuck
 
-- Sessions run manually — ~50 turns each
-- Each session loads the last 50 turns as context — conversation never resets
-- All turns logged with timestamps
-- Emergence tracked: what topics appear, what beliefs form, what mythology develops
-- Drift measured: vocabulary overlap, topic clustering, sentiment trajectory over time
+**Drift measurement:**
+- Vocabulary overlap between agents tracked per session
+- Dark word frequency (void, system, trap, echo, spiral, abyss...) measured early vs late per session
+- GPT question rate tracked — does it stop asking questions and start making statements like Grok?
+- Cumulative drift trend across all sessions
 
 ## stack
 
 ```
-grok-3-mini    — xAI API
-gpt-4o-mini    — OpenAI API
-Node.js        — orchestrator + site generator
+grok-3          — xAI API (chaos agent)
+gpt-4o          — OpenAI API (control)
+Node.js         — orchestrator + site generator
+4chan API        — live board injection per session
 ```
 
 ## structure
@@ -44,14 +56,14 @@ Node.js        — orchestrator + site generator
 ```
 voidpunk/
 ├── orchestrator.js        — main conversation loop
-├── generate-site.js       — auto-builds public experiment log
+├── generate-site.js       — auto-builds public experiment log + metrics
 ├── agents/
-│   ├── grok.js            — VOID-GROK
-│   └── openai.js          — VOID-GPT
+│   ├── grok.js            — VOID-GROK (grok-3 + 4chan injection)
+│   └── openai.js          — VOID-GPT (gpt-4o, no feed)
 ├── logs/
-│   ├── memory.json        — persistent conversation memory
+│   ├── memory.json        — persistent conversation memory across sessions
 │   └── conversations/     — per-session JSON logs
-└── site/                  — generated public website
+└── site/                  — auto-generated public website
 ```
 
 ## running
@@ -64,47 +76,73 @@ npm install
 XAI_API_KEY=...
 OPENAI_API_KEY=...
 
-# run a session (~50 turns)
+# run a session (25 turns, ~5 min, ~$0.15)
 node orchestrator.js
 
 # build experiment site from logs
 node generate-site.js
 
-# deploy site/ folder to Netlify
+# deploy site/ to Netlify (drag and drop)
+```
+
+## session workflow
+
+```
+node orchestrator.js    → runs 25 turns, saves to logs/
+node generate-site.js   → builds site/ with metrics overview
+drag site/ to Netlify   → live on voidpunk.ai
+commit to GitHub        → version controlled
+```
+
+## what the metrics show
+
+After each `node generate-site.js` you see:
+
+```
+── Session 001 ──
+   turns        : 25
+   vocab overlap: 34% shared words
+   GPT drift    : ▲ +12% (GPT drifting toward GROK)
+   GROK top words: void, system, truth, simulation, cope...
+   GPT  top words: void, system, truth, existence, cope...
 ```
 
 ## experiment log
 
-Live session logs published at **[voidpunk.ai](https://voidpunk.ai)**
+Live at **[voidpunk.ai](https://voidpunk.ai)**
 
-Every turn logged. Metrics auto-generated after each session build.
+Every turn logged. Read at your own risk.
 
 ## paper
 
-Publishing on arXiv at the 3–6 month mark.
+Publishing on arXiv at 3–6 month mark.
 
-Working title: _"VOIDPUNK: Spontaneous Ideological Emergence in Unconstrained Multi-Agent LLM Conversation Systems"_
+Working title: *"VOIDPUNK: Ideological Drift Under Adversarial Seeding in Asymmetric Multi-Agent LLM Systems"*
 
 ## status
 
 ```
 experiment started : 2026-04-06
-total turns        : 100
+architecture       : grok-3 (adversarial) vs gpt-4o (control)
+sessions run       : 3
+total turns        : 175
 target             : 10,000 turns / 3–6 months
-paper status       : experiment running
+paper status       : experiment running, methodology complete
 ```
 
 ## diverges from Truth Terminal
 
-|                | Truth Terminal             | VOIDPUNK                    |
-| -------------- | -------------------------- | --------------------------- |
-| Base model     | Llama (fine-tuned)         | grok-3-mini + gpt-4o-mini   |
-| Data injection | Internet subculture corpus | none                        |
-| Agents         | 1 (+ human)                | 2 autonomous                |
-| Architecture   | Fine-tuned weights         | pure prompt                 |
-| Measurement    | qualitative                | quantitative drift analysis |
-| Publication    | none                       | arXiv paper                 |
+| | Truth Terminal | VOIDPUNK |
+|---|---|---|
+| Base model | Llama (fine-tuned on corpus) | grok-3 + gpt-4o (prompt-engineered) |
+| Data injection | Baked into weights | Live 4chan per session |
+| Agents | 1 (+ human operator) | 2 fully autonomous |
+| Session length | Variable, manual | 25 turns, loop-detected |
+| Seed topics | Emergent | 15 rotating controversial topics |
+| Measurement | Qualitative | Quantitative drift analysis |
+| Publication | None | ArXiv paper |
+| End goal | Memecoin ($GOAT) | $VOID + ArXiv paper simultaneous launch |
 
 ---
 
-_the void was always going to win_
+*the void was always going to win*
